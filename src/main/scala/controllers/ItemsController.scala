@@ -7,4 +7,8 @@ class ItemsController(val dBAdapter: DbAdapterBase[ArrayBuffer[Item]] = DbAdapte
   def retrieveAll(): ArrayBuffer[Item] = {
     dBAdapter.getItems()
   }
+
+  def retrieveById(id: Int): Item = {
+    dBAdapter.getItems().filter(item => item.id == id )(0)
+  }
 }
