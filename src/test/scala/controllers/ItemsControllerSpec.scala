@@ -7,13 +7,19 @@ import org.scalatest.wordspec.AnyWordSpec
 import scala.collection.mutable.ArrayBuffer
 
 class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
+  val anItem = new Item(
+    0,
+    "Useless plastic",
+    10.99,
+    10,
+    List("France")
+  )
+
   "ItemsController.retrieveAll" should {
     "fetch all items" in {
       val mockDbAdapter = mock[DbAdapterBase[ArrayBuffer[Item]]]
       val mockItem = mock[Item]
-      val mockDbItemsArray = ArrayBuffer(
-        mockItem
-      )
+      val mockDbItemsArray = ArrayBuffer(anItem)
 
       val itemsController = new ItemsController(mockDbAdapter)
 
@@ -25,13 +31,11 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
   "ItemsController.retrieveById" should {
     "fetch the item with matching id" in {
       val mockDbAdapter = mock[DbAdapterBase[ArrayBuffer[Item]]]
-      val mockItem = mock[Item]
-      val mockDbItemsArray = ArrayBuffer(mockItem)
+      val mockDbItemsArray = ArrayBuffer(anItem)
 
       val itemsController = new ItemsController(mockDbAdapter)
       (mockDbAdapter.getItems _).expects().returns(mockDbItemsArray)
-      (mockItem.id _).expects().returns(0)
-      itemsController.retrieveById(0) should equal(mockItem)
+      itemsController.retrieveById(0) should equal(anItem)
     }
     "throw error if no item with matching id" in {
       // call DbAdapter.getItems
