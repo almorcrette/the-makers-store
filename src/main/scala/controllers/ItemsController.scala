@@ -7,7 +7,12 @@ class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
 
   def create(name: String, price: Double, quantity: Int, availableLocales: List[String]): Unit = {
     val lastId = retrieveAll.last.id
-    val newItem = new Item(lastId, name, price, quantity, availableLocales)
+    val newItem = new Item((lastId + 1), name, price, quantity, availableLocales)
+    println("newItem.id: ", newItem.id)
+    println("newItem.name: ", newItem.name)
+    println("newItem.price: ", newItem.price)
+    println("newItem.quantity: ", newItem.quantity)
+    println("newItem.availableLocales: ", newItem.availableLocales)
     dBAdapter.createItem(newItem)
   }
 

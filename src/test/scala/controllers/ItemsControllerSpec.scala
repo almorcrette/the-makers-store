@@ -62,7 +62,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
 
 
       (mockDbAdapter.createItem _).expects (where {
-        (newItem: Item) =>
+        newItem: Item =>
           newItem.id == 1 &&
           newItem.name == "Junk" &&
           newItem.price == 49.95 &&
