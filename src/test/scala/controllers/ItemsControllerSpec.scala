@@ -38,6 +38,17 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
       itemsController.retrieveById(0) should equal(anItem)
     }
     "throw error if no item with matching id" in {
+      val mockDbAdapter = mock[DbAdapterBase]
+      val mockDbItemsArray = ArrayBuffer(anItem)
+
+      val itemsController = new ItemsController(mockDbAdapter)
+      (mockDbAdapter.getItems _).expects().returns(mockDbItemsArray)
+
+      val thrown = the [Exception] thrownBy {
+        itemsController.retrieveById(1)
+      }
+      thrown.getMessage should equal ("Item not found")
+
       // call DbAdapter.getItems
       // filter DbAdapter.getItems return value by id
       // to throw error

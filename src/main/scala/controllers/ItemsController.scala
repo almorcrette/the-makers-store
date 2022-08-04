@@ -9,6 +9,11 @@ class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
   }
 
   def retrieveById(id: Int): Item = {
-    dBAdapter.getItems().filter(item => item.id == id )(0)
+    val retrievedItems = dBAdapter.getItems().filter(item => item.id == id)
+    if (retrievedItems.length == 0) {
+      throw new Exception("Item not found")
+    } else {
+      retrievedItems(0)
+    }
   }
 }
