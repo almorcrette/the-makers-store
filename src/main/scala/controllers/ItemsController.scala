@@ -3,7 +3,7 @@ import main.model.Item
 
 import scala.collection.mutable.ArrayBuffer
 
-class ItemsController(val dBAdapter: DbAdapterBase[ArrayBuffer[Item]] = DbAdapter) {
+class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
   def retrieveAll(): ArrayBuffer[Item] = {
     dBAdapter.getItems()
   }

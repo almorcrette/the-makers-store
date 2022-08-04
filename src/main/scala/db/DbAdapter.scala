@@ -6,8 +6,17 @@ import scala.collection.mutable.LinkedHashMap
 import main.model.Location
 import scala.collection.immutable.HashMap
 
+trait DbAdapterBase {
+  def dropAndReset: Unit
+  def getItems(): ArrayBuffer[Item]
+  def getLocations()
+  : LinkedHashMap[String, LinkedHashMap[String, Seq[Location]]]
+  def updateItem(id: Int, newItem: Item): Unit
+  def createItem(newItem: Item): Unit
+}
+
 //TODO: This needs to be refactored and tested properly, but it works for now
-object DbAdapter extends DbAdapterBase[ArrayBuffer[Item]] {
+object DbAdapter extends DbAdapterBase {
   private def readProducts(table: String): ArrayBuffer[ujson.Obj] = {
     val filename = "items" + ".json"
     val jsonString = os.read(os.pwd / "src" / "main" / "resources" / filename)
@@ -80,7 +89,7 @@ object DbAdapter extends DbAdapterBase[ArrayBuffer[Item]] {
   }
 
   def getLocations()
-      : LinkedHashMap[String, LinkedHashMap[String, Seq[Location]]] = {
+  : LinkedHashMap[String, LinkedHashMap[String, Seq[Location]]] = {
     val db = DbAdapter.readLocations()
     val dbHashMap = db.value.asInstanceOf[LinkedHashMap[String, ujson.Obj]]
 

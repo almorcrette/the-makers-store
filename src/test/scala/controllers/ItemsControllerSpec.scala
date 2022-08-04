@@ -17,7 +17,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
 
   "ItemsController.retrieveAll" should {
     "fetch all items" in {
-      val mockDbAdapter = mock[DbAdapterBase[ArrayBuffer[Item]]]
+      val mockDbAdapter = mock[DbAdapterBase]
       val mockItem = mock[Item]
       val mockDbItemsArray = ArrayBuffer(anItem)
 
@@ -30,7 +30,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
   }
   "ItemsController.retrieveById" should {
     "fetch the item with matching id" in {
-      val mockDbAdapter = mock[DbAdapterBase[ArrayBuffer[Item]]]
+      val mockDbAdapter = mock[DbAdapterBase]
       val mockDbItemsArray = ArrayBuffer(anItem)
 
       val itemsController = new ItemsController(mockDbAdapter)
