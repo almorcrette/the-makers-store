@@ -48,10 +48,34 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
         itemsController.retrieveById(1)
       }
       thrown.getMessage should equal ("Item not found")
+    }
+  }
+  "ItemsController.create" should {
+    "create a new item" in {
+      val mockDbAdapter = mock[DbAdapterBase]
 
-      // call DbAdapter.getItems
-      // filter DbAdapter.getItems return value by id
-      // to throw error
+      val mockDbItemsArray = ArrayBuffer(anItem)
+
+      val itemsController = new ItemsController(mockDbAdapter)
+      (mockDbAdapter.getItems _).expects().returns(mockDbItemsArray)
+      (mockDbAdapter.createItem _).expects(*)
+
+
+      (mockDbAdapter.createItem _).expects (where {
+        (newItem: Item) =>
+          newItem.id == 1 &&
+          newItem.name == "Junk" &&
+          newItem.price == 49.95 &&
+          newItem.quantity == 100 &&
+          newItem.availableLocales == List("France")
+      })
+
+      itemsController.create(
+        "Junk",
+        49.95,
+        100,
+        List("France")
+      )
     }
   }
 }
