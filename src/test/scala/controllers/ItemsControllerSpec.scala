@@ -1,4 +1,4 @@
-import main.db.DbAdapterBase
+import main.db.{DbAdapterBase, ItemInterface}
 import main.model.Item
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
@@ -9,8 +9,8 @@ import scala.collection.mutable.ArrayBuffer
 class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
   "ItemsController.retrieveAll" should {
     "fetch all items" in {
-      val mockDbAdapter = mock[DbAdapterBase[ArrayBuffer[Item]]]
-      val mockItem = mock[Item]
+      val mockDbAdapter = mock[DbAdapterBase[ArrayBuffer[ItemInterface]]]
+      val mockItem = mock[ItemInterface]
       val mockDbItemsArray = ArrayBuffer(
         mockItem
       )
@@ -24,8 +24,8 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
   }
   "ItemsController.retrieveById" should {
     "fetch the item with matching id" in {
-      val mockDbAdapter = mock[DbAdapterBase[ArrayBuffer[Item]]]
-      val mockItem = mock[Item]
+      val mockDbAdapter = mock[DbAdapterBase[ArrayBuffer[ItemInterface]]]
+      val mockItem = mock[ItemInterface]
       val mockDbItemsArray = ArrayBuffer(mockItem)
 
       val itemsController = new ItemsController(mockDbAdapter)

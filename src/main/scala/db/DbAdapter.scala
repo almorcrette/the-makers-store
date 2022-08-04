@@ -7,7 +7,7 @@ import main.model.Location
 import scala.collection.immutable.HashMap
 
 //TODO: This needs to be refactored and tested properly, but it works for now
-object DbAdapter extends DbAdapterBase[ArrayBuffer[Item]] {
+object DbAdapter extends DbAdapterBase[ArrayBuffer[ItemInterface]] {
   private def readProducts(table: String): ArrayBuffer[ujson.Obj] = {
     val filename = "items" + ".json"
     val jsonString = os.read(os.pwd / "src" / "main" / "resources" / filename)
@@ -28,7 +28,7 @@ object DbAdapter extends DbAdapterBase[ArrayBuffer[Item]] {
     data
   }
 
-  private def write(table: String, data: ArrayBuffer[Item]) = {
+  private def write(table: String, data: ArrayBuffer[ItemInterface]) = {
     val filename = table + ".json"
 
     val newData = ujson.Arr.from(data.map(item => {
@@ -65,7 +65,7 @@ object DbAdapter extends DbAdapterBase[ArrayBuffer[Item]] {
     )
   }
 
-  def getItems(): ArrayBuffer[Item] = {
+  def getItems(): ArrayBuffer[ItemInterface] = {
     val db = DbAdapter.readProducts("items")
 
     db.map(item => {
