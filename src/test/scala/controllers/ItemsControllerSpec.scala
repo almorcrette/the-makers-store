@@ -106,9 +106,9 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
         (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
         (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
 
-        itemsController.update(0, name = "Junk").id should equal(0)
-        itemsController.update(0, name = "Junk").name should equal("Junk")
-        itemsController.update(0, name = "Junk").price should equal(10.99)
+        itemsController.update(0, name = Option["Junk"]).id should equal(0)
+        itemsController.update(0, name = Option["Junk"]).name should equal("Junk")
+        itemsController.update(0, name = Option["Junk"]).price should equal(10.99)
 
 
       }
