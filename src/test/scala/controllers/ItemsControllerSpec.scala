@@ -58,7 +58,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
 
       val itemsController = new ItemsController(mockDbAdapter)
       (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
-      (mockDbAdapter.createItem _).expects(*).anyNumberOfTimes()
+      (mockDbAdapter.createItem _).expects(*).anyNumberOfTimes() // problem: doesn't check what is passed as argument
 
 
 //      (mockDbAdapter.createItem _).expects (where {
@@ -106,7 +106,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
       val itemsController = new ItemsController(mockDbAdapter)
 
       (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
-      (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes()
+      (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
 
       itemsController.update(0, "Junk", 49.95, 100, List("France")).id should equal(0)
       itemsController.update(0, "Junk", 49.95, 100, List("France")).name should equal("Junk")
@@ -114,8 +114,6 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
       itemsController.update(0, "Junk", 49.95, 100, List("France")).quantity should equal(100)
       itemsController.update(0, "Junk", 49.95, 100, List("France")).availableLocales should equal(List("France"))
 
-      // check it creates a new item
-      // calls updateItem with the id and the new item
     }
     // throw error if no matching id?
   }
