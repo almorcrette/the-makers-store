@@ -57,25 +57,44 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
       val mockDbItemsArray = ArrayBuffer(anItem)
 
       val itemsController = new ItemsController(mockDbAdapter)
-      (mockDbAdapter.getItems _).expects().returns(mockDbItemsArray)
-      (mockDbAdapter.createItem _).expects(*)
+      (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
+      (mockDbAdapter.createItem _).expects(*).anyNumberOfTimes()
 
 
-      (mockDbAdapter.createItem _).expects (where {
-        newItem: Item =>
-          newItem.id == 1 &&
-          newItem.name == "Junk" &&
-          newItem.price == 49.95 &&
-          newItem.quantity == 100 &&
-          newItem.availableLocales == List("France")
-      })
+//      (mockDbAdapter.createItem _).expects (where {
+//        newItem: Item =>
+//          newItem.id == 1 &&
+//          newItem.name == "Junk" &&
+//          newItem.price == 49.95 &&
+//          newItem.quantity == 100 &&
+//          newItem.availableLocales == List("France")
+//      })
 
       itemsController.create(
         "Junk",
         49.95,
         100,
-        List("France")
-      )
+        List("France")).id should equal (1)
+      itemsController.create(
+        "Junk",
+        49.95,
+        100,
+        List("France")).name should equal ("Junk")
+      itemsController.create(
+        "Junk",
+        49.95,
+        100,
+        List("France")).price should equal (49.95)
+      itemsController.create(
+        "Junk",
+        49.95,
+        100,
+        List("France")).quantity should equal (100)
+      itemsController.create(
+        "Junk",
+        49.95,
+        100,
+        List("France")).availableLocales should equal (List("France"))
     }
   }
 }
