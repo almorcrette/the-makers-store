@@ -98,23 +98,29 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
     }
   }
   "ItemsController.update" should {
-    "update an item with matching id" in {
-      val mockDbAdapter = mock[DbAdapterBase]
+    "update an item with matching id" should {
+      "updating name if new name given" in {
+        val mockDbAdapter = mock[DbAdapterBase]
+        val mockDbItemsArray = ArrayBuffer(anItem)
+        val itemsController = new ItemsController(mockDbAdapter)
+        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
+        (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
 
-      val mockDbItemsArray = ArrayBuffer(anItem)
+        itemsController.update(0, name = "Junk").id should equal(0)
+        itemsController.update(0, name = "Junk").name should equal("Junk")
+        itemsController.update(0, name = "Junk").price should equal(10.99)
 
-      val itemsController = new ItemsController(mockDbAdapter)
 
-      (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
-      (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
-
-      itemsController.update(0, "Junk", 49.95, 100, List("France")).id should equal(0)
-      itemsController.update(0, "Junk", 49.95, 100, List("France")).name should equal("Junk")
-      itemsController.update(0, "Junk", 49.95, 100, List("France")).price should equal(49.95)
-      itemsController.update(0, "Junk", 49.95, 100, List("France")).quantity should equal(100)
-      itemsController.update(0, "Junk", 49.95, 100, List("France")).availableLocales should equal(List("France"))
+      }
+      "updating price if new price given" in {
+      }
+      "updating quantity if new quantity given" in {
+      }
+      "updating available locales if new available locales given" in {
+      }
 
     }
+
     // throw error if no matching id?
   }
 }
