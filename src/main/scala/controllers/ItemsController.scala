@@ -17,6 +17,12 @@ class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
     newItem
   }
 
+  def update(id: Int, name: String, price: Double, quantity: Int, availableLocales: List[String]): Item = {
+    val itemUpdate = new Item(id, name, price, quantity, availableLocales)
+    DbAdapter.updateItem(id, itemUpdate)
+    itemUpdate
+  }
+
   def retrieveAll(): ArrayBuffer[Item] = {
     dBAdapter.getItems()
   }

@@ -97,4 +97,26 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
         List("France")).availableLocales should equal (List("France"))
     }
   }
+  "ItemsController.update" should {
+    "update an item with matching id" in {
+      val mockDbAdapter = mock[DbAdapterBase]
+
+      val mockDbItemsArray = ArrayBuffer(anItem)
+
+      val itemsController = new ItemsController(mockDbAdapter)
+
+      (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
+      (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes()
+
+      itemsController.update(0, "Junk", 49.95, 100, List("France")).id should equal(0)
+      itemsController.update(0, "Junk", 49.95, 100, List("France")).name should equal("Junk")
+      itemsController.update(0, "Junk", 49.95, 100, List("France")).price should equal(49.95)
+      itemsController.update(0, "Junk", 49.95, 100, List("France")).quantity should equal(100)
+      itemsController.update(0, "Junk", 49.95, 100, List("France")).availableLocales should equal(List("France"))
+
+      // check it creates a new item
+      // calls updateItem with the id and the new item
+    }
+    // throw error if no matching id?
+  }
 }
