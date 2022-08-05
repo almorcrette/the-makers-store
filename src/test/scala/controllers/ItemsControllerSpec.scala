@@ -1,10 +1,10 @@
-import main.db.DbAdapterBase
+import main.db.{DbAdapter, DbAdapterBase}
 import main.model.Item
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
 class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
   val anItem = new Item(
@@ -12,7 +12,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
     "Useless plastic",
     10.99,
     10,
-    List("France")
+    List("Paris")
   )
 
   "ItemsController.retrieveAll" should {
@@ -67,34 +67,34 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
 //          newItem.name == "Junk" &&
 //          newItem.price == 49.95 &&
 //          newItem.quantity == 100 &&
-//          newItem.availableLocales == List("France")
+//          newItem.availableLocales == List("Paris")
 //      })
 
       itemsController.create(
         "Junk",
         49.95,
         100,
-        List("France")).id should equal (1)
+        List("Paris")).id should equal (1)
       itemsController.create(
         "Junk",
         49.95,
         100,
-        List("France")).name should equal ("Junk")
+        List("Paris")).name should equal ("Junk")
       itemsController.create(
         "Junk",
         49.95,
         100,
-        List("France")).price should equal (49.95)
+        List("Paris")).price should equal (49.95)
       itemsController.create(
         "Junk",
         49.95,
         100,
-        List("France")).quantity should equal (100)
+        List("Paris")).quantity should equal (100)
       itemsController.create(
         "Junk",
         49.95,
         100,
-        List("France")).availableLocales should equal (List("France"))
+        List("Paris")).availableLocales should equal (List("Paris"))
     }
   }
   "ItemsController.update" should {
@@ -110,7 +110,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
         itemsController.update(0, name = Option("Junk")).name should equal("Junk")
         itemsController.update(0, name = Option("Junk")).price should equal(10.99)
         itemsController.update(0, name = Option("Junk")).quantity should equal(10)
-        itemsController.update(0, name = Option("Junk")).availableLocales should equal(List("France"))
+        itemsController.update(0, name = Option("Junk")).availableLocales should equal(List("Paris"))
 
       }
       "updating price if new price given" in {
@@ -124,7 +124,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
         itemsController.update(0, price = Option(49.95)).name should equal("Useless plastic")
         itemsController.update(0, price = Option(49.95)).price should equal(49.95)
         itemsController.update(0, price = Option(49.95)).quantity should equal(10)
-        itemsController.update(0, price = Option(49.95)).availableLocales should equal(List("France"))
+        itemsController.update(0, price = Option(49.95)).availableLocales should equal(List("Paris"))
       }
       "updating quantity if new quantity given" in {
         val mockDbAdapter = mock[DbAdapterBase]
@@ -137,7 +137,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
         itemsController.update(0, quantity = Option(100)).name should equal("Useless plastic")
         itemsController.update(0, quantity = Option(100)).price should equal(10.99)
         itemsController.update(0, quantity = Option(100)).quantity should equal(100)
-        itemsController.update(0, quantity = Option(100)).availableLocales should equal(List("France"))
+        itemsController.update(0, quantity = Option(100)).availableLocales should equal(List("Paris"))
       }
       "updating available locales if new available locales given" in {
         val mockDbAdapter = mock[DbAdapterBase]
@@ -146,15 +146,34 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
         (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
         (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
 
-        itemsController.update(0, availableLocales = Option(List("Germany"))).id should equal(0)
-        itemsController.update(0, availableLocales = Option(List("Germany"))).name should equal("Useless plastic")
-        itemsController.update(0, availableLocales = Option(List("Germany"))).price should equal(10.99)
-        itemsController.update(0, availableLocales = Option(List("Germany"))).quantity should equal(10)
-        itemsController.update(0, availableLocales = Option(List("Germany"))).availableLocales should equal(List("Germany"))
+        itemsController.update(0, availableLocales = Option(List("Berlin"))).id should equal(0)
+        itemsController.update(0, availableLocales = Option(List("Berlin"))).name should equal("Useless plastic")
+        itemsController.update(0, availableLocales = Option(List("Berlin"))).price should equal(10.99)
+        itemsController.update(0, availableLocales = Option(List("Berlin"))).quantity should equal(10)
+        itemsController.update(0, availableLocales = Option(List("Berlin"))).availableLocales should equal(List("Berlin"))
       }
-
     }
 
-    // throw error if no matching id?
+    "ItemsController.retrieveByLocation" should {
+      "fetch all items available in location by id" in {
+
+//        def retrieveByLocation(continent: String) = {
+//          DbAdapter.getItems().filter((item) => item.availableLocales == continent)
+//        }
+//
+//        def retrieveByLocation(locationName: String) = {
+//          DbAdapter.getItems().filter((item) => item.availableLocales == continent)
+//        }
+
+        println(DbAdapter.getLocations())
+        println(DbAdapter.getLocations().find((K, V) => V == DbAdapter.getLocations().values.filter(continent => continent.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last))
+//        DbAdapter.getLocations().values.foreach((continent => continent.values.foreach((country) => country.foreach((location) => println(location.name)))))
+        println(DbAdapter.getLocations().values.filter(continent => continent.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last)
+
+
+
+      }
+    }
+
   }
 }
