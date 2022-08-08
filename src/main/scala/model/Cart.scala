@@ -20,7 +20,12 @@ class Cart(
     val availableItems = itemsController.retrieveByLocation(location)
     if (availableItems.map(item => item.name.toLowerCase()).contains(itemName.toLowerCase())) {
       if (availableItems.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= number) {
-        items += (itemName.toLowerCase() -> number)
+        val numberThisItemInBasket = items get itemName.toLowerCase()
+        if (numberThisItemInBasket.isEmpty) {
+          items += (itemName.toLowerCase() -> number)
+        } else {
+          items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + number))
+        }
       } else {
         throw new Exception("Not enough in stock")
       }
