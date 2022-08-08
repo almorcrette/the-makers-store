@@ -155,7 +155,38 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
     }
 
     "ItemsController.retrieveByLocation" should {
-      "fetch all items available in location by id" in {
+      "fetch all items available in location by name" in {
+        val mockDbAdapter = mock[DbAdapterBase]
+
+        val scoop = new Item(
+          2,
+          "Icecream scoop",
+          4.95,
+          1000,
+          List("Europe")
+        )
+        val blender = new Item(
+          3,
+          "Blender",
+          44.50,
+          200,
+          List("Europe", "NA")
+        )
+        val breadMaker = new Item(
+          4,
+          "Bread maker",
+          99.99,
+          50,
+          List("NA")
+        )
+        val mockItemsInventory = ArrayBuffer(scoop, blender, breadMaker)
+
+        val itemsController = new ItemsController(mockDbAdapter)
+
+
+        (mockDbAdapter.getItems _).expects().returns(mockItemsInventory)
+        itemsController.retrieveByLocation("Woodbridge") should equal(ArrayBuffer(scoop, blender))
+
 
 //        def retrieveByLocation(continent: String) = {
 //          DbAdapter.getItems().filter((item) => item.availableLocales == continent)

@@ -59,4 +59,10 @@ class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
       retrievedItems(0)
     }
   }
+
+  def retrieveByLocation(locationName: String): ArrayBuffer[Item] = {
+    DbAdapter.getItems().filter(
+      (item) => item.availableLocales == DbAdapter.getLocations().filter((el) => el._2.values.filter(country => country.filter(location => location.name == locationName).nonEmpty).nonEmpty).last._1
+    )
+  }
 }
