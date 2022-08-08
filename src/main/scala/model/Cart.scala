@@ -18,8 +18,12 @@ class Cart(
 
   def addItem(itemName: String): Unit = {
     val availableItems = itemsController.retrieveByLocation(location)
-    if (availableItems.map(item => item.name).contains(itemName) && availableItems.filter(item => item.name == itemName).last.quantity > 0 ) {
-      items += (itemName -> 1)
+    if (availableItems.map(item => item.name).contains(itemName)) {
+      if (availableItems.filter(item => item.name == itemName).last.quantity > 0) {
+        items += (itemName -> 1)
+      }
+    } else {
+      throw new Exception("Item not found")
     }
   }
 
