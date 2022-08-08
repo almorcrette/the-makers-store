@@ -62,15 +62,24 @@ class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
 
   def retrieveByLocation(locationName: String): ArrayBuffer[Item] = {
     dBAdapter.getItems().filter(
-      (item) => item.availableLocales.contains(
-        dBAdapter.getLocations().filter(
-          (el) => el._2.values.filter(
-            country => country.filter(
-              location => location.name == locationName
-            ).nonEmpty
-          ).nonEmpty
-        ).last._1
-      )
+      (item) => availableAtLocation(item, locationName)
     )
+  }
+
+  private def availableAtLocation(item: Item, locationName: String): Boolean = {
+    item.availableLocales.contains(
+      getContinentOfLocation(locationName)
+    )
+  }
+
+  private def getContinentOfLocation(locationName: String): String  = {
+    dBAdapter.getLocations().filter(
+      (continentPair) => continentPair._2.values.filter(
+        country => country.filter(
+          location => location.name == locationName
+        ).nonEmpty
+      ).nonEmpty
+    ).last._1
+
   }
 }

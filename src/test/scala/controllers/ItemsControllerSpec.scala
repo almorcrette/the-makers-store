@@ -158,59 +158,29 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
     "ItemsController.retrieveByLocation" should {
       "fetch all items available in location by name" in {
         val mockDbAdapter = mock[DbAdapterBase]
-        val scoop = new Item(
-          2,
-          "Icecream scoop",
-          4.95,
-          1000,
-          List("Europe")
-        )
-        val blender = new Item(
-          3,
-          "Blender",
-          44.50,
-          200,
-          List("Europe", "NA")
-        )
-        val breadMaker = new Item(
-          4,
-          "Bread maker",
-          99.99,
-          50,
-          List("NA")
-        )
+        val anotherItemsController = new ItemsController(mockDbAdapter)
 
-        val aLocation = new Location(
-          0,
-          "Woodbridge"
-        )
-        val anotherLocation = new Location(
-          2,
-          "Reading"
-        )
-        val aFrenchLocation = new Location(
-          3,
-          "Le Vigan"
-        )
+        val scoop = new Item(2, "Icecream scoop", 4.95, 1000, List("Europe"))
+        val blender = new Item(3, "Blender", 44.50, 200, List("Europe", "NA"))
+        val breadMaker = new Item(4, "Bread maker", 99.99, 50, List("NA"))
+        val mockItemsInventory = ArrayBuffer(scoop, blender, breadMaker)
+        val woodbridgeItems = ArrayBuffer(scoop, blender)
 
-        val mockDbLocationsLinkedHashMap = mutable.LinkedHashMap(
+        val aLocation = new Location(0, "Woodbridge")
+        val anotherLocation = new Location(2, "Reading")
+        val aFrenchLocation = new Location(3, "Le Vigan")
+
+        val mockLocations = mutable.LinkedHashMap(
           "Europe" -> mutable.LinkedHashMap(
             "UK" -> Seq(aLocation, anotherLocation),
             "France" -> Seq(aFrenchLocation)
           )
         )
 
-        val mockItemsInventory = ArrayBuffer(scoop, blender, breadMaker)
-        val woodbridgeItems = ArrayBuffer(scoop, blender)
-
-        val anotherItemsController = new ItemsController(mockDbAdapter)
-
-
         (mockDbAdapter.getItems _).expects().anyNumberOfTimes.returns(mockItemsInventory)
-        (mockDbAdapter.getLocations _).expects().anyNumberOfTimes.returns(mockDbLocationsLinkedHashMap)
+        (mockDbAdapter.getLocations _).expects().anyNumberOfTimes.returns(mockLocations)
 
         anotherItemsController.retrieveByLocation("Woodbridge") should equal(woodbridgeItems)
-
       }
 
 
