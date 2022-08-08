@@ -1,9 +1,10 @@
 import main.db.{DbAdapter, DbAdapterBase}
-import main.model.Item
+import main.model.{Item, Location}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
+import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
 class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
@@ -157,7 +158,6 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
     "ItemsController.retrieveByLocation" should {
       "fetch all items available in location by name" in {
         val mockDbAdapter = mock[DbAdapterBase]
-
         val scoop = new Item(
           2,
           "Icecream scoop",
@@ -179,39 +179,41 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
           50,
           List("NA")
         )
+
+        val aLocation = new Location(
+          0,
+          "Woodbridge"
+        )
+        val anotherLocation = new Location(
+          2,
+          "Reading"
+        )
+        val aFrenchLocation = new Location(
+          3,
+          "Le Vigan"
+        )
+
+        val mockDbLocationsLinkedHashMap = mutable.LinkedHashMap(
+          "Europe" -> mutable.LinkedHashMap(
+            "UK" -> Seq(aLocation, anotherLocation),
+            "France" -> Seq(aFrenchLocation)
+          )
+        )
+
         val mockItemsInventory = ArrayBuffer(scoop, blender, breadMaker)
+        val woodbridgeItems = ArrayBuffer(scoop, blender)
 
-        val itemsController = new ItemsController(mockDbAdapter)
-
-
-        (mockDbAdapter.getItems _).expects().returns(mockItemsInventory)
-        itemsController.retrieveByLocation("Woodbridge") should equal(ArrayBuffer(scoop, blender))
+        val anotherItemsController = new ItemsController(mockDbAdapter)
 
 
-//        def retrieveByLocation(continent: String) = {
-//          DbAdapter.getItems().filter((item) => item.availableLocales == continent)
-//        }
-//
-//        def retrieveByLocation(locationName: String) = {
-//          DbAdapter.getItems().filter((item) => item.availableLocales == DbAdapter.getLocations().filter((el) => el._2.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last._1))
-//        }
+        (mockDbAdapter.getItems _).expects().anyNumberOfTimes.returns(mockItemsInventory)
+        (mockDbAdapter.getLocations _).expects().anyNumberOfTimes.returns(mockDbLocationsLinkedHashMap)
 
-//        println("DbAdapter.getLocations(): ", DbAdapter.getLocations())
-//        println("DbAdapter.getLocations().values: ", DbAdapter.getLocations().values)
-
-//        println("DbAdapter.getLocations(): ", DbAdapter.getLocations().filter((el) => println(el)))
-
-//        *** println(DbAdapter.getLocations().filter((el) => el._2.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last._1)
-
-        //        println(DbAdapter.getLocations().find((K, V) => V == DbAdapter.getLocations().values.filter(continent => continent.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last))
-//        DbAdapter.getLocations().values.foreach((continent => continent.values.foreach((country) => country.foreach((location) => println(location.name)))))
-//        println(DbAdapter.getLocations().values.filter(continent => continent.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last)
-//        println(DbAdapter.getLocations().filter(continentMap => continentMap.value.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last)
-
-
-
+        anotherItemsController.retrieveByLocation("Woodbridge") should equal(woodbridgeItems)
 
       }
+
+
     }
 
   }

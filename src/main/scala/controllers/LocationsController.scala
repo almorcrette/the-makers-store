@@ -9,7 +9,7 @@ class LocationsController(val dBAdapter: DbAdapterBase = DbAdapter) {
     dBAdapter.getLocations()
   }
 
-  def retrieveByContinent(continent: String) = {
+  def retrieveByContinent(continent: String) = { // Probably should be returning the Location objects
     dBAdapter.getLocations().get(continent) match {
       case Some(countries) =>
         countries.map((pair) => pair._2).flatten.map((location) => location.name)
