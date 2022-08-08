@@ -162,13 +162,21 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory {
 //        }
 //
 //        def retrieveByLocation(locationName: String) = {
-//          DbAdapter.getItems().filter((item) => item.availableLocales == continent)
+//          DbAdapter.getItems().filter((item) => item.availableLocales == DbAdapter.getLocations().filter((el) => el._2.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last._1))
 //        }
 
-        println(DbAdapter.getLocations())
-        println(DbAdapter.getLocations().find((K, V) => V == DbAdapter.getLocations().values.filter(continent => continent.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last))
+//        println("DbAdapter.getLocations(): ", DbAdapter.getLocations())
+//        println("DbAdapter.getLocations().values: ", DbAdapter.getLocations().values)
+
+//        println("DbAdapter.getLocations(): ", DbAdapter.getLocations().filter((el) => println(el)))
+
+//        *** println(DbAdapter.getLocations().filter((el) => el._2.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last._1)
+
+        //        println(DbAdapter.getLocations().find((K, V) => V == DbAdapter.getLocations().values.filter(continent => continent.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last))
 //        DbAdapter.getLocations().values.foreach((continent => continent.values.foreach((country) => country.foreach((location) => println(location.name)))))
-        println(DbAdapter.getLocations().values.filter(continent => continent.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last)
+//        println(DbAdapter.getLocations().values.filter(continent => continent.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last)
+//        println(DbAdapter.getLocations().filter(continentMap => continentMap.value.values.filter(country => country.filter(location => location.name == "New York").nonEmpty).nonEmpty).last)
+
 
 
 
