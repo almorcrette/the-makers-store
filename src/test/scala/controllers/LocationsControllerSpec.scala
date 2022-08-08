@@ -16,12 +16,17 @@ class LocationsControllerSpec extends AnyWordSpec with Matchers with MockFactory
     2,
     "Reading"
   )
+  val aFrenchLocation = new Location(
+    3,
+    "Le Vigan"
+  )
   "LocationsController.retrieveAll" should {
     "fetch all locations" in {
       val mockDbAdapter = mock[DbAdapterBase]
       val mockDbLocationsLinkedHashMap = mutable.LinkedHashMap(
         "Europe" -> mutable.LinkedHashMap(
-          "UK" -> Seq(aLocation, anotherLocation)
+          "UK" -> Seq(aLocation, anotherLocation),
+          "France" -> Seq(aFrenchLocation)
         )
       )
       val locationsController = new LocationsController(mockDbAdapter)
@@ -35,14 +40,14 @@ class LocationsControllerSpec extends AnyWordSpec with Matchers with MockFactory
       val mockDbAdapter = mock[DbAdapterBase]
       val mockDbLocationsLinkedHashMap = mutable.LinkedHashMap(
         "Europe" -> mutable.LinkedHashMap(
-          "UK" -> Seq(aLocation, anotherLocation)
+          "UK" -> Seq(aLocation, anotherLocation),
+          "France" -> Seq(aFrenchLocation)
         )
       )
       val locationsController = new LocationsController(mockDbAdapter)
 
       (mockDbAdapter.getLocations _).expects().returns(mockDbLocationsLinkedHashMap)
-      locationsController.retrieveByContinent("Europe") should equal(ArrayBuffer("Woodbridge", "Reading"))
-
+      locationsController.retrieveByContinent("Europe") should equal(ArrayBuffer("Woodbridge", "Reading", "Le Vigan"))
     }
 
   }
