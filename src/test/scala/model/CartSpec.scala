@@ -37,9 +37,29 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory {
       val cart = new Cart("London", mockUuidFactory, mockItemsController)
       (mockItemsController.retrieveByLocation _).expects("London").returns(mockItemsInventory)
 
-      cart.addItem("Icecream scoop")
+      cart.addItem("icecream scoop")
 
-      cart.viewItems()("Icecream scoop") should equal(1)
+      cart.viewItems()("icecream scoop") should equal(1)
+    }
+    "add an item to the cart even if typed with different case (if available)" in {
+      val mockUuidFactory = mock[FactoryBase[UUID]]
+      val mockUuid = UUIDFactory.create
+
+      (mockUuidFactory.create _).expects().anyNumberOfTimes.returning(mockUuid)
+
+      val mockItemsController = mock[ItemsController]
+
+      val scoop = new Item(2, "Icecream scoop", 4.95, 1000, List("Europe"))
+      val blender = new Item(3, "Blender", 44.50, 200, List("Europe", "NA"))
+      val breadMaker = new Item(4, "Bread maker", 99.99, 50, List("NA"))
+      val mockItemsInventory = ArrayBuffer(scoop, blender, breadMaker)
+
+      val cart = new Cart("London", mockUuidFactory, mockItemsController)
+      (mockItemsController.retrieveByLocation _).expects("London").returns(mockItemsInventory)
+
+      cart.addItem("iceCREam scoop")
+
+      cart.viewItems()("icecream scoop") should equal(1)
     }
     "add more than one of an item to the cart if it is available in the cart location and the item is in stock" in {
       val mockUuidFactory = mock[FactoryBase[UUID]]
@@ -59,7 +79,7 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory {
 
       cart.addItem("Icecream scoop", 5)
 
-      cart.viewItems()("Icecream scoop") should equal(5)
+      cart.viewItems()("icecream scoop") should equal(5)
     }
     "raises an error if the name of the item is not found in the inventory" in {
       val mockUuidFactory = mock[FactoryBase[UUID]]
