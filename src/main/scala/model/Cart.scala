@@ -16,13 +16,13 @@ class Cart(
     uuid
   }
 
-  def addItem(itemName: String): Unit = {
+  def addItem(itemName: String, number: Int = 1): Unit = {
     val availableItems = itemsController.retrieveByLocation(location)
     if (availableItems.map(item => item.name).contains(itemName)) {
-      if (availableItems.filter(item => item.name == itemName).last.quantity > 0) {
-        items += (itemName -> 1)
+      if (availableItems.filter(item => item.name == itemName).last.quantity >= number) {
+        items += (itemName -> number)
       } else {
-        throw new Exception("Out of stock")
+        throw new Exception("Not enough in stock")
       }
     } else {
       throw new Exception("Item not found")
