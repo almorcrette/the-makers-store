@@ -12,7 +12,7 @@ class LocationsController(val dBAdapter: DbAdapterBase = DbAdapter) {
   def retrieveByContinent(continent: String) = {
     dBAdapter.getLocations().get(continent) match {
       case Some(countries) =>
-        countries.map((el) => el._2).flatten.map((location) => location.name)
+        countries.map((pair) => pair._2).flatten.map((location) => location.name)
       case None =>
         "error"
     }

@@ -11,6 +11,7 @@ trait DbAdapterBase {
   def getItems(): ArrayBuffer[Item]
   def getLocations()
   : LinkedHashMap[String, LinkedHashMap[String, Seq[Location]]]
+
   def updateItem(id: Int, newItem: Item): Unit
   def createItem(newItem: Item): Unit
 }
