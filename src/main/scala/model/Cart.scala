@@ -21,6 +21,8 @@ class Cart(
     if (availableItems.map(item => item.name).contains(itemName)) {
       if (availableItems.filter(item => item.name == itemName).last.quantity > 0) {
         items += (itemName -> 1)
+      } else {
+        throw new Exception("Out of stock")
       }
     } else {
       throw new Exception("Item not found")

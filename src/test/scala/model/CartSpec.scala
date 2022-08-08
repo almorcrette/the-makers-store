@@ -84,5 +84,28 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory {
       }
       thrown.getMessage should equal ("Item not found")
     }
+    "raises an error if item is nout of stock in the customer's location" in {
+      val mockUuidFactory = mock[FactoryBase[UUID]]
+      val mockUuid = UUIDFactory.create
+
+      (mockUuidFactory.create _).expects().anyNumberOfTimes.returning(mockUuid)
+
+      val mockItemsController = mock[ItemsController]
+
+      val scoop = new Item(2, "Icecream scoop", 4.95, 1000, List("Europe"))
+      val blender = new Item(3, "Blender", 44.50, 200, List("Europe", "NA"))
+      val breadMaker = new Item(4, "Bread maker", 99.99, 50, List("NA"))
+      val ghost = new Item(5, "Ghost", 20, 0, List("Europe"))
+      val mockItemsInventory = ArrayBuffer(scoop, blender, breadMaker, ghost)
+      val londonInventory = ArrayBuffer(scoop, blender, ghost)
+
+      val cart = new Cart("London", mockUuidFactory, mockItemsController)
+      (mockItemsController.retrieveByLocation _).expects("London").returns(londonInventory)
+
+      val thrown = the [Exception] thrownBy {
+        cart.addItem("Ghost")
+      }
+      thrown.getMessage should equal ("Out of stock")
+    }
   }
 }
