@@ -14,7 +14,7 @@ class LocationsController(val dBAdapter: DbAdapterBase = DbAdapter) {
       case Some(countries) =>
         countries.map((pair) => pair._2).flatten.map((location) => location.name)
       case None =>
-        "error"
+        throw new Exception("Continent not found")
     }
   }
 
