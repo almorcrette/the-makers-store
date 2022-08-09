@@ -16,6 +16,10 @@ class Cart(
     uuid
   }
 
+  def reset(): Unit = {
+    items = Map()
+  }
+
   def addItem(itemName: String, number: Int = 1): Unit = {
     val availableItems = itemsController.retrieveByLocation(location)
     if (availableItems.map(item => item.name.toLowerCase()).contains(itemName.toLowerCase())) {
