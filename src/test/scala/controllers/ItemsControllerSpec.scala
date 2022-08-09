@@ -39,7 +39,21 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
       }
       thrown.getMessage should equal ("Item not found")
     }
+  }
 
+  "ItemsController.retrieveByName" should {
+    "fetch the item with matching name (regardless of cases)" in {
+      (mockDbAdapter.getItems _).expects().returns(mockItemsInventory)
+      itemsController.retrieveByName("uSeLess pLasTIC") should equal(anItem)
+    }
+    "throw error if no item with matching name (regardless of cases)" in {
+      (mockDbAdapter.getItems _).expects().returns(mockItemsInventory)
+
+      val thrown = the [Exception] thrownBy {
+        itemsController.retrieveByName("rubbish")
+      }
+      thrown.getMessage should equal ("Item not found")
+    }
   }
 
   "ItemsController.create" should {

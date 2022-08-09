@@ -59,6 +59,14 @@ class Cart(
     }
   }
 
+  def onPaymentSuccess(): Unit = {
+    val item = itemsController.retrieveByName("icecream scoop")
+    itemsController.update(
+      item.id,
+      quantity = Some(item.quantity - 1)
+    )
+  }
+
   private def itemAmountAvailable(itemName: String, amount: Int): Boolean = {
     val availableItems = itemsController.retrieveByLocation(location)
     availableItems.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= amount

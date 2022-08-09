@@ -61,6 +61,15 @@ class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
     }
   }
 
+  def retrieveByName(name: String): Item = {
+    val retrievedItems = dBAdapter.getItems().filter(item => item.name.toLowerCase == name.toLowerCase)
+    if (retrievedItems.length == 0) {
+      throw new Exception("Item not found")
+    } else {
+      retrievedItems(0)
+    }
+  }
+
   def retrieveByLocation(locationName: String): ArrayBuffer[Item] = {
     dBAdapter.getItems().filter(
       (item) => availableAtLocation(item, locationName)

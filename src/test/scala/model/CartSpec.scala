@@ -136,4 +136,26 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       thrown.getMessage should equal ("Not enough in stock")
     }
   }
+  "cart.onPaymentSuccess" should {
+    "updates the inventory to subtract the recently sold stock when the cart has one item" in {
+      val mockAnotherItemsController = mock[ItemsController]
+
+      val anotherCart = new Cart("London", mockUuidFactory, mockAnotherItemsController)
+
+
+      (mockAnotherItemsController.retrieveByLocation _).expects("London").returns(londonInventory)
+      anotherCart.addItem("icecream scoop")
+
+      (mockAnotherItemsController.retrieveByName _).expects("icecream scoop").returns(scoop)
+      (mockAnotherItemsController.update _).expects(
+        scoop.id,
+        None,
+        None,
+        Some(scoop.quantity - 1),
+        None
+      )
+
+      anotherCart.onPaymentSuccess()
+    }
+  }
 }
