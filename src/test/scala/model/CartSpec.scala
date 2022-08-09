@@ -137,7 +137,7 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     }
   }
   "cart.onPaymentSuccess" should {
-    "updates the inventory to subtract the recently sold stock when the cart has one item" in {
+    "updates the inventory to subtract the recently sold stock when the cart has one item (an icecream scoop)" in {
       val mockAnotherItemsController = mock[ItemsController]
 
       val anotherCart = new Cart("London", mockUuidFactory, mockAnotherItemsController)
@@ -152,6 +152,26 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
         None,
         None,
         Some(scoop.quantity - 1),
+        None
+      )
+
+      anotherCart.onPaymentSuccess()
+    }
+    "updates the inventory to subtract the recently sold stock when the cart has one item (a blender)" in {
+      val mockAnotherItemsController = mock[ItemsController]
+
+      val anotherCart = new Cart("London", mockUuidFactory, mockAnotherItemsController)
+
+
+      (mockAnotherItemsController.retrieveByLocation _).expects("London").returns(londonInventory)
+      anotherCart.addItem("Blender")
+
+      (mockAnotherItemsController.retrieveByName _).expects("blender").returns(blender)
+      (mockAnotherItemsController.update _).expects(
+        blender.id,
+        None,
+        None,
+        Some(blender.quantity - 1),
         None
       )
 

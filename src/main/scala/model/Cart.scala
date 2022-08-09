@@ -60,7 +60,7 @@ class Cart(
   }
 
   def onPaymentSuccess(): Unit = {
-    val item = itemsController.retrieveByName("icecream scoop")
+    val item = itemsController.retrieveByName(viewItems().last._1)
     itemsController.update(
       item.id,
       quantity = Some(item.quantity - 1)
