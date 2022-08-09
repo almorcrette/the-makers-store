@@ -210,4 +210,14 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       anotherCart.onPaymentSuccess()
     }
   }
+  "cart.onPaymentFailed" should {
+    "clear the cart" in {
+      (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+
+      cart.addItem("icecream scoop")
+      cart.onPaymentFailed()
+      cart.viewItems() should equal(Map())
+
+    }
+  }
 }

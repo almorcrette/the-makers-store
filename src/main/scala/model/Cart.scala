@@ -65,6 +65,10 @@ class Cart(
     instructInventoryUpdate(itemsPurchased)
   }
 
+  def onPaymentFailed(): Unit = {
+    reset()
+  }
+
   private def mapCartToInventoryItems(): Map[Item, Int] = {
     viewItems.map(item => (itemsController.retrieveByName(item._1) -> item._2))
   }
