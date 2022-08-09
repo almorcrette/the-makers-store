@@ -16,6 +16,10 @@ class Cart(
     uuid
   }
 
+  def viewItems(): Map[String, Int] = {
+    items
+  }
+
   def reset(): Unit = {
     items = Map()
   }
@@ -38,8 +42,10 @@ class Cart(
     }
   }
 
-  def viewItems(): Map[String, Int] = {
-    items
+  def changeAmount(itemName: String, amount: Int, direction: String = "increase"): Unit = {
+    items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + amount))
   }
+
+
 
 }
