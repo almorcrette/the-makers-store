@@ -121,7 +121,11 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       cart.viewItems()("icecream scoop") should equal(0)
     }
     "raise an error if the item is not found in the cart" in {
-
+      (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+      val thrown = the [Exception] thrownBy {
+        cart.changeAmount("rubbish", 1)
+      }
+      thrown.getMessage should equal ("Item not in cart")
     }
   }
 }

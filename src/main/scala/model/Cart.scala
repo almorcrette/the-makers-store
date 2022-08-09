@@ -43,10 +43,13 @@ class Cart(
   }
 
   def changeAmount(itemName: String, amount: Int, direction: String = "+"): Unit = {
-    direction match {
-      case "+" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + amount))
-      case "-" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) - amount))
-
+    if (!items.keySet.contains(itemName.toLowerCase())) {
+      throw new Exception("Item not in cart")
+    } else {
+      direction match {
+        case "+" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + amount))
+        case "-" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) - amount))
+      }
     }
   }
 
