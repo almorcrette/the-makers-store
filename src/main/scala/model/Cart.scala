@@ -1,5 +1,6 @@
 //import java.util.UUID
 import io.jvm.uuid._
+import main.model.Item
 
 import scala.::
 import scala.collection.immutable.Map
@@ -60,7 +61,15 @@ class Cart(
   }
 
   def onPaymentSuccess(): Unit = {
-    val itemsPurchased = viewItems.map(item => (itemsController.retrieveByName(item._1) -> item._2))
+    val itemsPurchased = mapCartToInventoryItems()
+    instructInventoryUpdate(itemsPurchased)
+  }
+
+  private def mapCartToInventoryItems(): Map[Item, Int] = {
+    viewItems.map(item => (itemsController.retrieveByName(item._1) -> item._2))
+  }
+
+  private def instructInventoryUpdate(itemsPurchased: Map[Item, Int]): Unit = {
     itemsPurchased.foreach(
       itemOrder => itemsController.update(
         itemOrder._1.id,
