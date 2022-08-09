@@ -1,6 +1,7 @@
 import main.db.{DbAdapter, DbAdapterBase}
-import main.model.Item
+import main.model.{Item, Location}
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
@@ -73,13 +74,27 @@ class ItemsController(val dBAdapter: DbAdapterBase = DbAdapter) {
   }
 
   private def getContinentOfLocation(locationName: String): String  = {
-    dBAdapter.getLocations().filter(
-      (continentPair) => continentPair._2.values.filter(
-        country => country.filter(
-          location => location.name == locationName
-        ).nonEmpty
-      ).nonEmpty
-    ).last._1
-
+    findContinentOfLocation(locationName, dBAdapter.getLocations()) match {
+      case Some(continent) => continent._1
+      case None => "N/A"
+    }
   }
+
+  private def findContinentOfLocation(
+                                       locationName: String,
+                                       allLocations: mutable.LinkedHashMap[String, mutable.LinkedHashMap[String, Seq[Location]]]
+                                     ): Option[(String, mutable.LinkedHashMap[String, Seq[Location]])] = {
+    allLocations.find(
+      (continent) => listCountries(continent).exists(
+        country => country.exists(
+          location => location.name == locationName
+        )
+      )
+    )
+  }
+
+  private def listCountries(continent: (String, mutable.LinkedHashMap[String, Seq[Location]])): Iterable[Seq[Location]] = {
+    continent._2.values
+  }
+
 }
