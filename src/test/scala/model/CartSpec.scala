@@ -85,6 +85,14 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       }
       thrown.getMessage should equal ("Not enough in stock")
     }
+  }
+  "Cart.reset" should {
+    "empty the cart" in {
+      (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+      cart.addItem("icecream scoop")
+      cart.reset()
+      cart.viewItems() should equal(Map())
 
+    }
   }
 }
