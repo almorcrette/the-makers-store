@@ -11,7 +11,7 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAndAfterEach with BeforeAndAfterAll {
 
   val anItem = new Item(0, "Useless plastic", 10.99, 10, List("Paris"))
-  val mockDbItemsArray = ArrayBuffer(anItem)
+  val mockItemsInventory = ArrayBuffer(anItem)
 
 
   val mockDbAdapter = mock[DbAdapterBase]
@@ -21,18 +21,18 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
 
   "ItemsController.retrieveAll" should {
     "fetch all items" in {
-      (mockDbAdapter.getItems _).expects().returns(mockDbItemsArray)
-      itemsController.retrieveAll() should equal(mockDbItemsArray)
+      (mockDbAdapter.getItems _).expects().returns(mockItemsInventory)
+      itemsController.retrieveAll() should equal(mockItemsInventory)
     }
   }
 
   "ItemsController.retrieveById" should {
     "fetch the item with matching id" in {
-      (mockDbAdapter.getItems _).expects().returns(mockDbItemsArray)
+      (mockDbAdapter.getItems _).expects().returns(mockItemsInventory)
       itemsController.retrieveById(0) should equal(anItem)
     }
     "throw error if no item with matching id" in {
-      (mockDbAdapter.getItems _).expects().returns(mockDbItemsArray)
+      (mockDbAdapter.getItems _).expects().returns(mockItemsInventory)
 
       val thrown = the [Exception] thrownBy {
         itemsController.retrieveById(1)
@@ -44,7 +44,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
 
   "ItemsController.create" should {
     "create a new item" in {
-      (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
+      (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockItemsInventory)
       (mockDbAdapter.createItem _).expects(*).anyNumberOfTimes() // problem: doesn't check what is passed as argument
 
 //      (mockDbAdapter.createItem _).expects (where {
@@ -86,7 +86,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
   "ItemsController.update" should {
     "update an item with matching id" should {
       "updating name if new name given" in {
-        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
+        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockItemsInventory)
         (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
 
         itemsController.update(0, name = Option("Junk")).id should equal(0)
@@ -97,7 +97,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
 
       }
       "updating price if new price given" in {
-        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
+        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockItemsInventory)
         (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
 
         itemsController.update(0, price = Option(49.95)).id should equal(0)
@@ -107,7 +107,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
         itemsController.update(0, price = Option(49.95)).availableLocales should equal(List("Paris"))
       }
       "updating quantity if new quantity given" in {
-        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
+        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockItemsInventory)
         (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
 
         itemsController.update(0, quantity = Option(100)).id should equal(0)
@@ -117,7 +117,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
         itemsController.update(0, quantity = Option(100)).availableLocales should equal(List("Paris"))
       }
       "updating available locales if new available locales given" in {
-        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockDbItemsArray)
+        (mockDbAdapter.getItems _).expects().anyNumberOfTimes().returns(mockItemsInventory)
         (mockDbAdapter.updateItem _).expects(0, *).anyNumberOfTimes() // problem: doesn't check what item is passed as argument
 
         itemsController.update(0, availableLocales = Option(List("Berlin"))).id should equal(0)
@@ -134,7 +134,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
         val scoop = new Item(2, "Icecream scoop", 4.95, 1000, List("Europe"))
         val blender = new Item(3, "Blender", 44.50, 200, List("Europe", "NA"))
         val breadMaker = new Item(4, "Bread maker", 99.99, 50, List("NA"))
-        val mockItemsInventory = ArrayBuffer(scoop, blender, breadMaker)
+        val mockAnotherItemsInventory = ArrayBuffer(scoop, blender, breadMaker)
         val woodbridgeItems = ArrayBuffer(scoop, blender)
 
         val aLocation = new Location(0, "Woodbridge")
@@ -148,7 +148,7 @@ class ItemsControllerSpec extends AnyWordSpec with Matchers with MockFactory wit
           )
         )
 
-        (mockDbAdapter.getItems _).expects().anyNumberOfTimes.returns(mockItemsInventory)
+        (mockDbAdapter.getItems _).expects().anyNumberOfTimes.returns(mockAnotherItemsInventory)
         (mockDbAdapter.getLocations _).expects().anyNumberOfTimes.returns(mockLocations)
 
         itemsController.retrieveByLocation("Woodbridge") should equal(woodbridgeItems)
