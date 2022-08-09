@@ -43,20 +43,25 @@ class Cart(
   }
 
   def changeAmount(itemName: String, amount: Int, direction: String = "+"): Unit = {
-    if (!items.keySet.contains(itemName.toLowerCase())) {
-      throw new Exception("Item not in cart")
-    } else {
-      direction match {
-        case "+" =>
-          val availableItems = itemsController.retrieveByLocation(location)
-          if (availableItems.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= amount + items.getOrElse(itemName.toLowerCase, 0)) {
-            items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + amount))
-          } else {
-            throw new Exception("Not enough in stock")
-          }
-        case "-" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) - amount))
-      }
+    val itemNameLC = itemName.toLowerCase
+    items.get(itemNameLC) match {
+      case None => throw new Exception("Item not in cart")
+      case Some(currentNumber) =>
+        direction match {
+          case "+" =>
+            if (itemAmountAvailable(itemName, amount + currentNumber)) {
+              items += (itemNameLC -> (items(itemNameLC) + amount))
+            } else {
+              throw new Exception("Not enough in stock")
+            }
+          case "-" => items += (itemNameLC -> (items(itemNameLC) - amount))
+        }
     }
+  }
+
+  private def itemAmountAvailable(itemName: String, amount: Int): Boolean = {
+    val availableItems = itemsController.retrieveByLocation(location)
+    availableItems.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= amount
   }
 
 
