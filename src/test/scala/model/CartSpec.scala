@@ -1,5 +1,6 @@
 import io.jvm.uuid.{StaticUUID, UUID}
 import main.model.Item
+import main.payment.{Payment, PaymentAdapterBase}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatest.matchers.should.Matchers
@@ -13,6 +14,8 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
   val mockUuid = UUIDFactory.create
   (mockUuidFactory.create _).when().returns(mockUuid)
 
+  val stubPaymentAdapter = stub[PaymentAdapterBase]
+
   val scoop = new Item(2, "Icecream scoop", 4.95, 1000, List("Europe"))
   val blender = new Item(3, "Blender", 44.50, 200, List("Europe", "NA"))
   val breadMaker = new Item(4, "Bread maker", 99.99, 50, List("NA"))
@@ -23,7 +26,7 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
 
   val mockItemsController = stub[ItemsController]
 
-  val cart = new Cart("London", mockUuidFactory, mockItemsController)
+  val cart = new Cart("London", mockUuidFactory, mockItemsController, stubPaymentAdapter)
 
   override def beforeEach(): Unit = {
     cart.reset()
@@ -239,6 +242,26 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       cart.addItem("icecream scoop")
       cart.onPaymentFailed()
       cart.viewItems() should equal(Map())
+
+    }
+  }
+  "cart.checkout" should {
+    "call the payment adapter" in {
+      val mockPaymentAdapter = mock[PaymentAdapterBase]
+
+      val cartWithMockPayment = new Cart("London", mockUuidFactory, mockItemsController, mockPaymentAdapter)
+
+      (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+
+      cartWithMockPayment.addItem("icecream scoop")
+
+      (mockPaymentAdapter.makePayment _).expects(
+        4.95,
+        cartWithMockPayment.onPaymentSuccess _,
+        cartWithMockPayment.onPaymentFailed _
+      )
+
+      cartWithMockPayment.checkout()
 
     }
   }

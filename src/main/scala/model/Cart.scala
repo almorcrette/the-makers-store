@@ -1,6 +1,7 @@
 //import java.util.UUID
 import io.jvm.uuid._
 import main.model.Item
+import main.payment.{Payment, PaymentAdapter, PaymentAdapterBase}
 
 import scala.::
 import scala.collection.immutable.Map
@@ -8,7 +9,8 @@ import scala.collection.immutable.Map
 class Cart(
             val location: String,
             val uuidFactory: FactoryBase[UUID] = UUIDFactory,
-            val itemsController: ItemsController = new ItemsController
+            val itemsController: ItemsController = new ItemsController,
+            val paymentAdapter: PaymentAdapterBase = PaymentAdapter
           ) {
   val uuid = uuidFactory.create
   private var items: Map[String, Int] = Map()
@@ -60,14 +62,23 @@ class Cart(
     }
   }
 
-  def onPaymentSuccess(): Unit = {
+  def onPaymentSuccess(payment: Payment = new Payment(0, true)): Unit = {
     val itemsPurchased = mapCartToInventoryItems()
     instructInventoryUpdate(itemsPurchased)
     reset()
   }
 
-  def onPaymentFailed(): Unit = {
+  def onPaymentFailed(payment: Payment = new Payment(0, false)): Unit = {
     reset()
+  }
+
+  def checkout(): Unit = {
+    paymentAdapter.makePayment(
+      4.95,
+      onPaymentSuccess,
+      onPaymentFailed
+    )
+
   }
 
   private def mapCartToInventoryItems(): Map[Item, Int] = {
