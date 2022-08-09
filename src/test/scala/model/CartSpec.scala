@@ -209,6 +209,28 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
 
       anotherCart.onPaymentSuccess()
     }
+    "clear the cart" in {
+      val mockAnotherItemsController = mock[ItemsController]
+
+      val anotherCart = new Cart("London", mockUuidFactory, mockAnotherItemsController)
+
+
+      (mockAnotherItemsController.retrieveByLocation _).expects("London").returns(londonInventory)
+      anotherCart.addItem("icecream scoop")
+
+      (mockAnotherItemsController.retrieveByName _).expects("icecream scoop").returns(scoop)
+      (mockAnotherItemsController.update _).expects(
+        scoop.id,
+        None,
+        None,
+        Some(scoop.quantity - 1),
+        None
+      )
+
+      anotherCart.onPaymentSuccess()
+
+      anotherCart.viewItems() should equal(Map())
+    }
   }
   "cart.onPaymentFailed" should {
     "clear the cart" in {

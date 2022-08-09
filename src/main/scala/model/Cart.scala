@@ -63,6 +63,7 @@ class Cart(
   def onPaymentSuccess(): Unit = {
     val itemsPurchased = mapCartToInventoryItems()
     instructInventoryUpdate(itemsPurchased)
+    reset()
   }
 
   def onPaymentFailed(): Unit = {
