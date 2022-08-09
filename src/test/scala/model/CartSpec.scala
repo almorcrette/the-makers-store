@@ -177,5 +177,37 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
 
       anotherCart.onPaymentSuccess()
     }
+    "updates the inventory to subtract the recently sold stock when the cart has multiple different items" in {
+      val mockAnotherItemsController = mock[ItemsController]
+
+      val anotherCart = new Cart("London", mockUuidFactory, mockAnotherItemsController)
+
+
+      (mockAnotherItemsController.retrieveByLocation _).expects("London").anyNumberOfTimes.returns(londonInventory)
+      anotherCart.addItem("Blender")
+      anotherCart.addItem("icecream scoop", 2)
+
+
+      (mockAnotherItemsController.retrieveByName _).expects("blender").returns(blender)
+      (mockAnotherItemsController.retrieveByName _).expects("icecream scoop").returns(scoop)
+
+      (mockAnotherItemsController.update _).expects(
+        blender.id,
+        None,
+        None,
+        Some(blender.quantity - 1),
+        None
+      )
+
+      (mockAnotherItemsController.update _).expects(
+        scoop.id,
+        None,
+        None,
+        Some(scoop.quantity - 2),
+        None
+      )
+
+      anotherCart.onPaymentSuccess()
+    }
   }
 }

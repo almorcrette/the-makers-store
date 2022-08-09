@@ -60,10 +60,12 @@ class Cart(
   }
 
   def onPaymentSuccess(): Unit = {
-    val item = itemsController.retrieveByName(viewItems().last._1)
-    itemsController.update(
-      item.id,
-      quantity = Some(item.quantity - 1)
+    val itemsPurchased = viewItems.map(item => (itemsController.retrieveByName(item._1) -> item._2))
+    itemsPurchased.foreach(
+      itemOrder => itemsController.update(
+        itemOrder._1.id,
+        quantity = Some(itemOrder._1.quantity - itemOrder._2)
+      )
     )
   }
 
