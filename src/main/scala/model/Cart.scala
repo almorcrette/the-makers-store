@@ -47,7 +47,13 @@ class Cart(
       throw new Exception("Item not in cart")
     } else {
       direction match {
-        case "+" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + amount))
+        case "+" =>
+          val availableItems = itemsController.retrieveByLocation(location)
+          if (availableItems.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= amount + items.getOrElse(itemName.toLowerCase, 0)) {
+            items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + amount))
+          } else {
+            throw new Exception("Not enough in stock")
+          }
         case "-" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) - amount))
       }
     }
