@@ -42,8 +42,12 @@ class Cart(
     }
   }
 
-  def changeAmount(itemName: String, amount: Int, direction: String = "increase"): Unit = {
-    items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + amount))
+  def changeAmount(itemName: String, amount: Int, direction: String = "+"): Unit = {
+    direction match {
+      case "+" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + amount))
+      case "-" => items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) - amount))
+
+    }
   }
 
 

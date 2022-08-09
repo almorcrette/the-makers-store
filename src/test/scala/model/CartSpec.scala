@@ -102,7 +102,11 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       cart.changeAmount("iceCreaM ScOOP", 1)
       cart.viewItems()("icecream scoop") should equal(2)
     }
-    "decrease the amount of an item in the cart (regardless of how the item is typed)" in {
+    "decrease the amount of an item in the cart by 1 (regardless of how the item is typed)" in {
+      (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+      cart.addItem("icecream scoop")
+      cart.changeAmount("iceCreaM ScOOP", 1, "-")
+      cart.viewItems()("icecream scoop") should equal(0)
 
     }
     "raise an error if the item is not found in the cart" in {
