@@ -63,17 +63,19 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     }
     "raises an error if the name of the item is not found in the inventory" in {
       (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
-      val thrown = the [Exception] thrownBy {
+      val stream = new ByteArrayOutputStream()
+      Console.withOut(stream) {
         cart.addItem("Typo")
       }
-      thrown.getMessage should equal ("Item not found")
+      stream.toString() should include ("Item not found")
     }
     "raises an error if item is not available in the customer's location" in {
       (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
-      val thrown = the [Exception] thrownBy {
+      val stream = new ByteArrayOutputStream()
+      Console.withOut(stream) {
         cart.addItem("Bread maker")
       }
-      thrown.getMessage should equal ("Item not found")
+      stream.toString() should include ("Item not found")
     }
     "print message 'not enough in stock' if item is out of stock in the customer's location" in {
       (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)

@@ -44,7 +44,7 @@ class Cart(
 //        throw new Exception("Not enough in stock")
       }
     } else {
-      throw new Exception("Item not found")
+      println("Item not found")
     }
   }
 
