@@ -39,7 +39,9 @@ class Cart(
           items += (itemName.toLowerCase() -> (items(itemName.toLowerCase()) + number))
         }
       } else {
-        throw new Exception("Not enough in stock")
+        println("Not enough in stock")
+
+//        throw new Exception("Not enough in stock")
       }
     } else {
       throw new Exception("Item not found")

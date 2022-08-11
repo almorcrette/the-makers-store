@@ -23,9 +23,9 @@ object App {
     println("Adding four lovely apples")
     cart.addItem("Lovely Apple", 4) // Available in EU and NA
     println("Checking cart: " + cart.viewItems)
-    println("Adding another lovely apple")
-    cart.addItem("Lovely Apple")
-    println("Checking cart: " + cart.viewItems)
+//    println("Adding another lovely apple")
+//    cart.addItem("Lovely Apple")
+//    println("Checking cart: " + cart.viewItems)
     println("Adding two strange gourds")
     cart.addItem("Strange Gourd", 2) //Only available in EU
     println("Checking cart: " + cart.viewItems)
@@ -42,7 +42,7 @@ object App {
 //        cart.addItem("Yankee Salami", 2) // Only available in NA
 //    cart.changeAmount("Delicious Soup", 3) // Will add three soups
 //    cart.changeAmount("Lovely Apple", 2) // Should raise error as only 4 items available
-    cart.changeAmount("Orange Peel", 6, "-") // raise error as not that many in basket)
+//    cart.changeAmount("Orange Peel", 6, "-") // raise error as not that many in basket)
     println("Checking cart: " + cart.viewItems)
 
     cart.checkout
