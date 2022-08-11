@@ -148,18 +148,21 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     "raise an error if attempt to increase amount of item beyond what's available in inventory" in {
       (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
       cart.addItem("zombie", 3)
-      val thrown = the [Exception] thrownBy {
+
+      val stream = new ByteArrayOutputStream()
+      Console.withOut(stream) {
         cart.changeAmount("zombie", 1)
       }
-      thrown.getMessage should equal ("Not enough in stock")
+      stream.toString() should include ("Not enough in stock")
     }
     "raise an error if attempt to decrease amount of item beyond what's in the cart" in {
       (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
       cart.addItem("icecream scoop", 3)
-      val thrown = the [Exception] thrownBy {
+      val stream = new ByteArrayOutputStream()
+      Console.withOut(stream) {
         cart.changeAmount("icecream scoop", 4, "-")
       }
-      thrown.getMessage should equal ("Not enough in cart")
+      stream.toString() should include ("Not enough in cart")
     }
   }
   "cart.onPaymentSuccess" should {

@@ -40,8 +40,6 @@ class Cart(
         }
       } else {
         println("Not enough in stock")
-
-//        throw new Exception("Not enough in stock")
       }
     } else {
       println("Item not found")
@@ -76,11 +74,11 @@ class Cart(
             if (itemAmountAvailable(itemName, amount + currentNumber)) {
               items += (itemNameLC -> (items(itemNameLC) + amount))
             } else {
-              throw new Exception("Not enough in stock")
+              println("Not enough in stock")
             }
           case "-" =>
             if (items(itemNameLC) < amount) {
-          throw new Exception("Not enough in cart")
+          println("Not enough in cart")
         } else {
               items += (itemNameLC -> (items(itemNameLC) - amount))
             }
