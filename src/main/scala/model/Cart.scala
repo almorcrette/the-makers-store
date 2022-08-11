@@ -5,6 +5,7 @@ import main.payment.{Payment, PaymentAdapter, PaymentAdapterBase}
 
 import scala.::
 import scala.collection.immutable.Map
+import scala.collection.mutable.ArrayBuffer
 
 class Cart(
             val location: String,
@@ -28,9 +29,9 @@ class Cart(
   }
 
   def addItem(itemName: String, number: Int = 1): Unit = {
-    val availableItems = itemsController.retrieveByLocation(location)
-    if (availableItems.map(item => item.name.toLowerCase()).contains(itemName.toLowerCase())) {
-      if (availableItems.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= number) {
+    val itemsAvailableInLocation = itemsController.retrieveByLocation(location)
+    if (isItemAvailableInLocation(itemName, itemsAvailableInLocation)) {
+      if (isNumberItemsRequestedAvailable(itemName, number, itemsAvailableInLocation)) {
         val numberThisItemInBasket = items get itemName.toLowerCase()
         if (numberThisItemInBasket.isEmpty) {
           items += (itemName.toLowerCase() -> number)
@@ -43,6 +44,18 @@ class Cart(
     } else {
       throw new Exception("Item not found")
     }
+  }
+
+  private def isNumberItemsRequestedAvailable(itemName: String, number: Int, itemsAvailableInLocation: ArrayBuffer[Item]) = {
+    itemsAvailableInLocation.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= (number + viewItems().getOrElse(itemName.toLowerCase, 0))
+  }
+
+  private def isItemAvailableInLocation(itemName: String, itemsAvailableInLocation: ArrayBuffer[Item]) = {
+    itemsAvailableInLocation.map(itemLowerCaseName).contains(itemName.toLowerCase())
+  }
+
+  private def itemLowerCaseName(item: Item) = {
+    item.name.toLowerCase
   }
 
   def changeAmount(itemName: String, amount: Int, direction: String = "+"): Unit = {
@@ -65,10 +78,12 @@ class Cart(
   def onPaymentSuccess(payment: Payment = new Payment(0, true)): Unit = {
     val itemsPurchased = mapCartToInventoryItems()
     instructInventoryUpdate(itemsPurchased)
+    println(f"payment successful. ${payment.amount} charged")
     reset()
   }
 
   def onPaymentFailed(payment: Payment = new Payment(0, false)): Unit = {
+    println(f"payment failed. ${payment.amount} not charged")
     reset()
   }
 
@@ -103,8 +118,8 @@ class Cart(
   }
 
   private def itemAmountAvailable(itemName: String, amount: Int): Boolean = {
-    val availableItems = itemsController.retrieveByLocation(location)
-    availableItems.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= amount
+    val itemsAvailableInLocation = itemsController.retrieveByLocation(location)
+    itemsAvailableInLocation.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= amount
   }
 
 

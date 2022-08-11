@@ -88,6 +88,15 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       }
       thrown.getMessage should equal ("Not enough in stock")
     }
+    "raises an error if trying to add more of an item than is in stock and already in basket" in {
+      (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+      cart.addItem("Zombie", 3)
+
+      val thrown = the [Exception] thrownBy {
+        cart.addItem("Zombie", 1)
+      }
+      thrown.getMessage should equal ("Not enough in stock")
+    }
   }
   "Cart.reset" should {
     "empty the cart" in {
@@ -294,13 +303,8 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
           *,  // problem: not testing that onSuccess is passed as an argument
           *  // problem: not testing that onSuccess is passed as an argument
         )
-
         cartWithMockPayment.checkout()
-
-
       }
-
-
     }
   }
 }
