@@ -147,6 +147,14 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
       }
       thrown.getMessage should equal ("Not enough in stock")
     }
+    "raise an error if attempt to decrease amount of item beyond what's in the cart" in {
+      (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+      cart.addItem("icecream scoop", 3)
+      val thrown = the [Exception] thrownBy {
+        cart.changeAmount("icecream scoop", 4, "-")
+      }
+      thrown.getMessage should equal ("Not enough in cart")
+    }
   }
   "cart.onPaymentSuccess" should {
     "updates the inventory to subtract the recently sold stock when the cart has one item (an icecream scoop)" in {

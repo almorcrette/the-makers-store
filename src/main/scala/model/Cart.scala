@@ -46,8 +46,14 @@ class Cart(
     }
   }
 
-  private def isNumberItemsRequestedAvailable(itemName: String, number: Int, itemsAvailableInLocation: ArrayBuffer[Item]) = {
-    itemsAvailableInLocation.filter(item => item.name.toLowerCase() == itemName.toLowerCase()).last.quantity >= (number + viewItems().getOrElse(itemName.toLowerCase, 0))
+  private def isNumberItemsRequestedAvailable(
+                                               itemName: String,
+                                               number: Int,
+                                               itemsAvailableInLocation: ArrayBuffer[Item]
+                                             ) = {
+    itemsAvailableInLocation.filter(
+      item => item.name.toLowerCase() == itemName.toLowerCase()
+    ).last.quantity >= (number + viewItems().getOrElse(itemName.toLowerCase, 0))
   }
 
   private def isItemAvailableInLocation(itemName: String, itemsAvailableInLocation: ArrayBuffer[Item]) = {
@@ -70,7 +76,12 @@ class Cart(
             } else {
               throw new Exception("Not enough in stock")
             }
-          case "-" => items += (itemNameLC -> (items(itemNameLC) - amount))
+          case "-" =>
+            if (items(itemNameLC) < amount) {
+          throw new Exception("Not enough in cart")
+        } else {
+              items += (itemNameLC -> (items(itemNameLC) - amount))
+            }
         }
     }
   }
