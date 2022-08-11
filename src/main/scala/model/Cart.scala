@@ -73,12 +73,20 @@ class Cart(
   }
 
   def checkout(): Unit = {
+    val onSuccess = onPaymentSuccess _
+    val onFailure = onPaymentFailed _
     paymentAdapter.makePayment(
-      4.95,
-      onPaymentSuccess,
-      onPaymentFailed
+      getTotal(),
+      onSuccess,
+      onFailure
     )
+  }
 
+  private def getTotal(): Double = {
+    viewItems.foldLeft(0.0)((runningTotal, cartItem) => {
+      val inventoryReferenceItem = itemsController.retrieveByName(cartItem._1)
+      runningTotal + inventoryReferenceItem.price * cartItem._2
+    })
   }
 
   private def mapCartToInventoryItems(): Map[Item, Int] = {

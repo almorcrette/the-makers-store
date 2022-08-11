@@ -165,7 +165,6 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
 
       val anotherCart = new Cart("London", mockUuidFactory, mockAnotherItemsController)
 
-
       (mockAnotherItemsController.retrieveByLocation _).expects("London").returns(londonInventory)
       anotherCart.addItem("Blender")
 
@@ -246,22 +245,61 @@ class CartSpec extends AnyWordSpec with Matchers with MockFactory with BeforeAnd
     }
   }
   "cart.checkout" should {
-    "call the payment adapter" in {
-      val mockPaymentAdapter = mock[PaymentAdapterBase]
+    "call the payment adapter" which {
+      "passes onPaymentSucess and onPaymentFailed methods as function arguments" in {
+        val mockPaymentAdapter = mock[PaymentAdapterBase]
 
-      val cartWithMockPayment = new Cart("London", mockUuidFactory, mockItemsController, mockPaymentAdapter)
+        val cartWithMockPayment = new Cart("London", mockUuidFactory, mockItemsController, mockPaymentAdapter)
 
-      (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+        (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
 
-      cartWithMockPayment.addItem("icecream scoop")
+        cartWithMockPayment.addItem("icecream scoop")
 
-      (mockPaymentAdapter.makePayment _).expects(
-        4.95,
-        cartWithMockPayment.onPaymentSuccess _,
-        cartWithMockPayment.onPaymentFailed _
-      )
+        val onSuccess = cartWithMockPayment.onPaymentSuccess _
+        val onFailure = cartWithMockPayment.onPaymentFailed _
 
-      cartWithMockPayment.checkout()
+        (mockItemsController.retrieveByName _).when("icecream scoop").returns(
+          new Item(2, "Icecream scoop", 4.95, 999, List("Europe"))
+        )
+
+        (mockPaymentAdapter.makePayment _).expects(
+          4.95,
+          *, // problem: not testing that onSuccess is passed as an argument
+          * // problem: not testing that onFailure is passed as an argument
+        )
+
+        cartWithMockPayment.checkout()
+      }
+      "passes the total price of the items in the cart" in {
+        val mockPaymentAdapter = mock[PaymentAdapterBase]
+
+        val cartWithMockPayment = new Cart("London", mockUuidFactory, mockItemsController, mockPaymentAdapter)
+
+        (mockItemsController.retrieveByLocation _).when("London").returns(londonInventory)
+
+        cartWithMockPayment.addItem("icecream scoop")
+        cartWithMockPayment.addItem("icecream scoop")
+        cartWithMockPayment.addItem("blender")
+
+        (mockItemsController.retrieveByName _).when("icecream scoop").returns(
+          new Item(2, "Icecream scoop", 4.95, 998, List("Europe"))
+        )
+
+        (mockItemsController.retrieveByName _).when("blender").returns(
+          new Item(3, "Blender", 44.50, 199, List("Europe", "NA"))
+        )
+
+        (mockPaymentAdapter.makePayment _).expects(
+          54.4,
+          *,  // problem: not testing that onSuccess is passed as an argument
+          *  // problem: not testing that onSuccess is passed as an argument
+        )
+
+        cartWithMockPayment.checkout()
+
+
+      }
+
 
     }
   }
