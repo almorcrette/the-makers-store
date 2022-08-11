@@ -23,9 +23,9 @@ object App {
     println("Adding four lovely apples")
     cart.addItem("Lovely Apple", 4) // Available in EU and NA
     println("Checking cart: " + cart.viewItems)
-//    println("Adding another lovely apple")
-//    cart.addItem("Lovely Apple")
-//    println("Checking cart: " + cart.viewItems)
+    println("Attempting to add another lovely apple: ")
+    cart.addItem("Lovely Apple")
+    println("Checking cart: " + cart.viewItems)
     println("Adding two strange gourds")
     cart.addItem("Strange Gourd", 2) //Only available in EU
     println("Checking cart: " + cart.viewItems)
@@ -35,14 +35,17 @@ object App {
     println("Increasing the amount of delicious soups by three")
     cart.changeAmount("Delicious Soup", 3)
     println("Checking cart: " + cart.viewItems)
+    print("Attempt to increase lovely apples by 2: ")
+    cart.changeAmount("Lovely Apple", 2)
     println("Reducing the amount of lovely apples by two")
     cart.changeAmount("Lovely Apple", 2, "-")
     println("Checking cart: " + cart.viewItems)
-
-//        cart.addItem("Yankee Salami", 2) // Only available in NA
-//    cart.changeAmount("Delicious Soup", 3) // Will add three soups
-//    cart.changeAmount("Lovely Apple", 2) // Should raise error as only 4 items available
-//    cart.changeAmount("Orange Peel", 6, "-") // raise error as not that many in basket)
+    println("Attempt to reduce orange peels by 6: ")
+    cart.changeAmount("Orange Peel", 6, "-")
+    println("Checking cart: " + cart.viewItems)
+    println("Checking cart: " + cart.viewItems)
+    print("Attempting to add Yankee Salami: ")
+    cart.addItem("Yankee Salami", 2) // Only available in NA
     println("Checking cart: " + cart.viewItems)
 
     cart.checkout
